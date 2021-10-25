@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Employee">
+
+	<!-- Using ResultMap -->
+	<resultMap id="result"
+		class="com.example.demo.model.Employee">
+		<result property="employeesId" column="EMPLOYEE_ID" />
+		<result property="firstName" column="FIRST_NAME" />
+		<result property="lastName" column="LAST_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="numberPhone" column="PHONE_NUMBER" />
+		<result property="hireDate" column="HIRE_DATE" />
+		<result property="jobId" column="JOB_ID" />
+		<result property="salary" column="SALARY" />
+		<result property="commissionPct" column="COMMISSION_PCT" />
+		<result property="managerId" column="MANAGER_ID" />
+		<result property="departmentId" column="DEPARTMENT_ID" />
+	</resultMap>
+	<resultMap id="getDdlManager"
+		class="com.example.demo.model.Employee">
+		<result property="employeesId" column="EMPLOYEE_ID" />
+		<result property="name" column="NAME" />
+	</resultMap>
+	<select id="useResultMap" resultMap="result">
+		SELECT EMPLOYEE_ID,FIRST_NAME,LAST_NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,JOB_ID,SALARY,COMMISSION_PCT,MANAGER_ID,DEPARTMENT_ID
+		FROM EMPLOYEES
+		WHERE
+		EMPLOYEE_ID=#id#
+	</select>
+	<select id="getAll" resultMap="getDdlManager">
+		SELECT EMPLOYEE_ID,
+		(SELECT
+		CONCAT(CONCAT(FIRST_NAME,' '),LAST_NAME) FROM EMPLOYEES a where
+		a.EMPLOYEE_ID= b.EMPLOYEE_ID) as NAME
+		FROM EMPLOYEES b
+	</select>
+
+	<parameterMap id="param"
+		class="com.example.demo.model.ParameterForSearch">
+		<parameter property="name" />
+		<parameter property="jobId" />
+		<parameter property="departmentId" />
+		<parameter property="managerId" />
+
+	</parameterMap>
+<!-- 	<resultMap id="resultForSearch"
+		class="com.example.demo.model.Employee">
+		<result property="employeesId" column="EMPLOYEE_ID" />
+		<result property="firstName" column="FIRST_NAME" />
+		<result property="lastName" column="LAST_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="numberPhone" column="PHONE_NUMBER" />
+		<result property="hireDate" column="HIRE_DATE" />
+		<result property="jobId" column="JOB_ID" />
+		<result property="salary" column="SALARY" />
+		<result property="commissionPct" column="COMMISSION_PCT" />
+		<result property="managerId" column="MANAGER_ID" />
+		<result property="departmentId" column="DEPARTMENT_ID" />
+		<result property="name" jdbcType="String" />
+	</resultMap> -->
+	<statement  id="getResultForSearch" parameterClass="com.example.demo.model.ParameterForSearch" resultMap="result">
+		SELECT
+		EMPLOYEE_ID,FIRST_NAME,LAST_NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,JOB_ID,SALARY,COMMISSION_PCT,MANAGER_ID,DEPARTMENT_ID
+		from Employees
+		where ((first_name like '%'||#name#||'%')or(last_name like '%'||#name#||'%')or(#name# is null))
+		and (Job_Id = #jobId# or #jobId# is null)
+		and (Manager_ID =#managerId# or #managerId# is null)
+		and (DEPARTMENT_ID = #departmentId# or #departmentId# is null)
+	</statement >
+	<delete id="delete" parameterClass="int">
+      DELETE FROM EMPLOYEES
+      WHERE  EMPLOYEE_ID = #id#
+   </delete>
+</sqlMap>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Job">
+
+	<!-- Using ResultMap -->
+	<resultMap id="GetDDlJob" class="com.example.demo.model.Job">
+		<result property="jobId" column="JOB_ID" />
+		<result property="jobTitle" column="JOB_TITLE" />
+	</resultMap>
+	<!-- <select id="useResultMap" resultMap="result"> SELECT * FROM EMPLOYEES 
+		WHERE EMPLOYEE_ID=#id# </select> -->
+	<select id="getDdlJob" resultMap="GetDDlJob">
+		SELECT JOB_ID,JOB_TITLE FROM JOBS
+	</select>
+</sqlMap>
